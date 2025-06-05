@@ -1,9 +1,7 @@
-// quiz.js
-
 document.addEventListener('DOMContentLoaded', () => {
   const submitButton = document.querySelector('button');
-  let warningElement = null; // Track current warning message
-  let isPassed = false; // Will be set later if score is above 40%
+  let warningElement = null;
+  let isPassed = false;
 
   const correctAnswers = {
     q1: 1,
@@ -14,11 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   submitButton.addEventListener('click', () => {
-    // Remove old warning/result if exists
+    // Remove previous warning
     if (warningElement) {
       warningElement.remove();
       warningElement = null;
     }
+
+    // Clear correct/incorrect styles
+    document.querySelectorAll('label').forEach(label => {
+      label.classList.remove('correct', 'incorrect');
+    });
 
     let totalQuestions = 5;
     let answered = 0;
@@ -29,20 +32,28 @@ document.addEventListener('DOMContentLoaded', () => {
       let selectedIndex = -1;
 
       for (let j = 0; j < radios.length; j++) {
-        if (radios[j].checked) {
-          selectedIndex = j + 1; // 1-based
+        const radio = radios[j];
+        if (radio.checked) {
+          selectedIndex = j + 1;
+          const label = radio.closest('label');
+
+          if (selectedIndex === correctAnswers[`q${i}`]) {
+            label.classList.add('correct');
+            score++;
+          } else {
+            label.classList.add('incorrect');
+          }
+
           break;
         }
       }
 
       if (selectedIndex !== -1) {
         answered++;
-        if (selectedIndex === correctAnswers[`q${i}`]) {
-          score++;
-        }
       }
     }
 
+    // Create feedback element
     warningElement = document.createElement('div');
     warningElement.classList.add('warning');
 
@@ -52,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const percent = Math.round((score / totalQuestions) * 100);
       warningElement.textContent = `Your score is ${percent}%`;
 
-      // Add extra message
       const message = document.createElement('p');
       message.style.marginTop = '8px';
       message.style.fontSize = '16px';
@@ -60,15 +70,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (percent > 40) {
         isPassed = true;
-        message.textContent = 'You are a true advisor!';
+        message.textContent = 'SUCCESS: You are a true advisor!';
+        createFloaters();
       } else {
-        message.textContent = 'You have failed to display candor!';
+        message.textContent = 'FAILURE: You have failed to display candor!';
       }
 
       warningElement.appendChild(message);
     }
 
-    // Insert result/warning under submit button
+    // Insert result
     submitButton.parentNode.insertBefore(warningElement, submitButton.nextSibling);
   });
+
+function createFloaters() {
+  const floaterCount = 6;
+  const screenWidth = window.innerWidth;
+  const spacing = screenWidth / (floaterCount + 1); // leave margin on both sides
+
+  for (let i = 0; i < floaterCount; i++) {
+    const floater = document.createElement('div');
+    floater.classList.add('floater');
+
+    // Position evenly across screen
+    const leftPx = spacing * (i + 1) - 32.5; // center 65px wide floater
+    floater.style.left = `${leftPx}px`;
+
+    // Animation timing
+    const duration = 7.5 + Math.random(); // 7.5–8.5s
+    const delay = Math.random(); // 0–1s
+    floater.style.animationDuration = `${duration}s`;
+    floater.style.animationDelay = `${delay}s`;
+
+    // Optional: add a background image
+    // floater.style.backgroundImage = 'url("your-image.gif")';
+
+    document.body.appendChild(floater);
+
+    floater.addEventListener('animationend', () => {
+      floater.remove();
+    });
+  }
+}
+
+
 });

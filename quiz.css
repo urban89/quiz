@@ -89,3 +89,48 @@ h4 {
   color: #ff8800; /* Bright, readable orange */
 }
 
+/* Incorrect answer style */
+.incorrect {
+  color: #d8000c; /* Strong red */
+  font-weight: bold;
+}
+
+/* Correct answer style */
+.correct {
+  color: #2ecc40; /* Bright green */
+  font-weight: bold;
+}
+
+.floater {
+  position: fixed;
+  bottom: -70px;
+  width: 65px;
+  height: 65px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 1000;
+  animation-name: float-up;
+  animation-timing-function: ease-out;
+  pointer-events: none;
+}
+
+@keyframes float-up {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(-400px) scale(1.1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-600px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+
+.floater {
+  background-image: url('sucess.gif');
+}
+
